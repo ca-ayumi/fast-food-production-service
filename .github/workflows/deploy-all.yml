@@ -1,0 +1,16 @@
+name: Deploy All Services
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-order:
+    uses: ca-ayumi/fast-food-order-service/.github/workflows/cd.yml@main
+
+  deploy-payment:
+    uses: ca-ayumi/fast-food-payment-service/.github/workflows/cd.yml@main
+
+  deploy-production:
+    uses: ca-ayumi/fast-food-production-service/.github/workflows/cd.yml@main

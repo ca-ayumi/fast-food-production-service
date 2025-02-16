@@ -1,0 +1,52 @@
+name: SonarQube Analysis
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  sonar:
+    name: Run SonarQube Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Rodar testes e gerar cobertura
+        run: npm run test:cov
+
+      - name: Rodar SonarQube Scanner
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Verificar status do Quality Gate
+        run: |
+          STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
+          "https://sonarcloud.io/api/qualitygates/project_status?projectKey=ca-ayumi_fast-food-order-service" \
+          | jq -r '.projectStatus.status')
+          
+          if [[ "$STATUS" != "OK" ]]; then
+            echo "❌ SonarCloud Quality Gate failed. Coverage < 80%."
+            exit 1
+          else
+            echo "✅ SonarCloud Quality Gate passed. Coverage >= 80%."
+          fi
