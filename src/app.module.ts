@@ -1,15 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { PaymentModule } from '@application/module/payment.module';
-import { Payment, PaymentSchema } from '@domain/entities/payment.entity';
+import { ProductionController } from '@application/interfaces/controllers/production.controller';
+import { ProductionService } from '@domain/service/production.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
-    MongooseModule.forFeature([{ name: Payment.name, schema: PaymentSchema }]),
-    PaymentModule,
-  ],
+  imports: [HttpModule],
+  controllers: [ProductionController],
+  providers: [ProductionService],
 })
 export class AppModule {}
