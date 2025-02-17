@@ -1,0 +1,16 @@
+name: Enforce Branch Protection
+
+on: pull_request
+
+jobs:
+  check-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Run Tests
+        run: npm install && npm test
+
+      - name: Linting
+        run: npm run lint
