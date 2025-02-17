@@ -27,7 +27,7 @@ jobs:
           node-version: '18'
 
       - name: Instalar dependências
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Rodar testes e gerar cobertura
         run: npm run test:cov

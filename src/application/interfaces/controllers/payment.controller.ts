@@ -15,7 +15,7 @@ export class PaymentController {
     body: {
       orderId: string;
       clientId: string;
-      products: { id: string; name: string; unitPrice: number }[]; // 🔹 Recebe a lista de produtos com nome e preço
+      products: { id: string; name: string; unitPrice: number }[];
       totalAmount: number;
     },
   ) {
@@ -24,8 +24,7 @@ export class PaymentController {
     return this.paymentService.processOrderPayment(
       body.orderId,
       body.clientId,
-      body.products, // 🔹 Passamos a lista de produtos completa
-
+      body.products,
     );
   }
 }

@@ -34,15 +34,10 @@ export class PaymentService {
       this.configService.get<string>('ORDER_SERVICE_URL') ||
       'http://localhost:3000';
   }
-
-  /**
-   * Recebe um pedido da Order API, gera um QR Code no Mercado Pago e retorna a resposta.
-   */
   async processOrderPayment(
     orderId: string,
     clientId: string,
     products: { id: string; name: string; unitPrice: number }[],
-    // 🔹 Agora recebemos a lista de produtos com preços
   ): Promise<{ orderId: string; qrCode: string }> {
     this.logger.debug(`Processing payment for order ${orderId}`);
 
@@ -71,7 +66,7 @@ export class PaymentService {
         title: product.name,
         quantity: 1,
         unit_measure: 'unit',
-        unit_price: product.unitPrice, // 🔹 Agora usamos o preço correto do banco
+        unit_price: product.unitPrice,
         total_amount: product.unitPrice,
       })),
       cash_out: { amount: 0 },
@@ -154,21 +149,18 @@ export class PaymentService {
         `Merchant order details: ${JSON.stringify(merchantOrder)}`,
       );
 
-      // 🔹 Verifica se o pagamento foi aprovado
       const isPaid =
         merchantOrder.status === 'closed' &&
         merchantOrder.payments?.some(
           (payment) => payment.status === 'approved',
         );
 
-      // 🔹 Define o novo status da ordem
       const orderStatus = isPaid ? 'Em Preparação' : 'Recebido';
 
       this.logger.debug(
         `Order ${merchantOrder.external_reference} will be updated to status: ${orderStatus}`,
       );
 
-      // 🔹 Atualiza o status da ordem na Order API
       const updateResponse = await firstValueFrom(
         this.httpService.patch(
           `${this.orderServiceUrl}/orders/${merchantOrder.external_reference}/status`,

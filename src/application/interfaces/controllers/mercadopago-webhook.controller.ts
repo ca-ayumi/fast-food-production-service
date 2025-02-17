@@ -43,7 +43,7 @@ export class MercadoPagoWebhookController {
     }
   }
 
-  private async processPayment(paymentId: string) {
+  async processPayment(paymentId: string) {
     this.logger.debug(`Fetching payment details for payment ID: ${paymentId}`);
 
     try {
@@ -77,7 +77,7 @@ export class MercadoPagoWebhookController {
     }
   }
 
-  private async getPaymentDetails(paymentId: string) {
+  async getPaymentDetails(paymentId: string) {
     try {
       const response = await firstValueFrom(
         this.httpService.get(
@@ -96,7 +96,7 @@ export class MercadoPagoWebhookController {
     }
   }
 
-  private async updateOrderStatus(orderId: string, status: string) {
+  async updateOrderStatus(orderId: string, status: string) {
     try {
       await firstValueFrom(
         this.httpService.patch(
